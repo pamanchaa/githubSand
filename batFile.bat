@@ -1,1 +1,1 @@
-java Hello.java
+java src/test/java/com/sand/Hello.java
