@@ -1,0 +1,271 @@
+-----------------------------------------------------------------------------------------------------------
+1. Install Maven (download it from Apache Maven) > Add the bin folder to your system's PATH
+-----------------------------------------------------------------------------------------------------------
+2. Create a Maven Project
+launch cmd
+cd C:\myData\EtoE  (the path where you want to create the project)
+mvn archetype:generate -DgroupId=com.example.selenium -DartifactId=SeleniumChromeLaunch -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+cd SeleniumChromeLaunch   (created by above command)
+-----------------------------------------------------------------------------------------------------------
+3. Open the pom.xml file (in C:\myData\EtoE\SeleniumChromeLaunch ) in Notepad++ and paste below (adds dependencies):
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example.selenium</groupId>
+  <artifactId>SeleniumChromeLaunch</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>SeleniumChromeLaunch</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+	
+	
+    <!-- Selenium Java -->
+    <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>4.13.0</version>
+    </dependency>
+
+    <!-- WebDriverManager -->
+    <dependency>
+        <groupId>io.github.bonigarcia</groupId>
+        <artifactId>webdrivermanager</artifactId>
+        <version>5.5.3</version>
+    </dependency>
+
+    <!-- JUnit (for testing) -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.10.0</version>
+        <scope>test</scope>
+    </dependency>
+
+
+  </dependencies>
+</project>
+-----------------------------------------------------------------------------------------------------------
+4. Run -> mvn clean install
+
+->Running mvn clean install essentially combines multiple Maven lifecycle phases:
+	1. Cleans the project environment.
+	2. Compiles the source and test code.
+	3. Runs unit tests. 
+	4. Packages the application.
+	5. Installs the artifact to the local Maven repository.
+	
+	1. clean: Deletes the target directory to ensure a fresh build environment.
+	2. compile: Compiles application code from src/main/java and stores the .class files in target/classes.
+	3. test-compile: Compiles test code from src/test/java and stores the .class files in target/test-classes.
+	4. test: Executes the tests and outputs the results. 
+	5. package: Packages the application into a .jar or .war file.
+	6. install: Installs the packaged artifact into the local Maven repository.
+	
+1. Clean  (mvn clean)
+The clean phase removes all previously compiled files and artifacts from the target directory, ensuring you start with a fresh build environment.
+This is useful to eliminate any stale or outdated files.
+
+2. Compile (mvn compile)
+The compile phase compiles your application's source code (src/main/java) into .class files and places them in the target/classes directory.	
+
+3. Test-Compile
+The test-compile phase compiles any test code located in the src/test/java directory and places the .class files in target/test-classes.
+
+4. Test 
+The test phase runs the unit tests located in src/test/java using the compiled test code. It uses a testing framework like JUnit or TestNG to execute the tests.
+
+5. Package (mvn package)
+The package phase takes the compiled .class files and bundles them into a deployable artifact, such as a .jar or .war, depending on your project setup.
+
+6. Install (mvn install)
+The install phase adds the packaged artifact (e.g., .jar or .war) to your local Maven repository (~/.m2/repository) so that it can be used by other projects on your machine.
+-----------------------------------------------------------------------------------------------------------
+5. Navigate to C:\myData\EtoE\SeleniumChromeLaunch\src\test\java\com\example\selenium > create LaunchChromeTest.java file with below code.
+
+package com.example.selenium;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class LaunchChromeTest {
+
+    @Test
+    public void testLaunchChrome() {
+        // Automatically resolve the correct ChromeDriver version
+        WebDriverManager.chromedriver().setup();
+
+        // Launch Chrome browser
+        WebDriver driver = new ChromeDriver();
+
+        try {
+            // Open a website
+            driver.get("https://www.google.com");
+
+            // Verify the page title
+            String expectedTitle = "Google";
+            String actualTitle = driver.getTitle();
+            assertEquals(expectedTitle, actualTitle, "Page title should match!");
+
+            System.out.println("Test Passed: Page title is " + actualTitle);
+
+        } finally {
+            // Close the browser
+            driver.close();
+        }
+    }
+}
+-----------------------------------------------------------------------------------------------------------
+6. Run -> mvn test
+
+-> mvn test = compile tests + run tests
+
+NOTE and IMP:
+->  If you specifically want to compile only the test files (from src/test/java), command = mvn test-compile
+
+-> What happens if we run mvn compile instaed of mvn test-compile?
+It compiles all Java files located in the src/main/java directory.
+Generates .class files and places them in the target/classes directory.
+Does not compile test code or execute tests (those are handled separately during the test phase).
+
+->  If you specifically want to run test with out compile,command = mvn test -DskipCompile=true
+-----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+i have no ide only notepad++
+If you're using Notepad++ instead of an IDE, no problem! You can still set up and run a Selenium project using Maven from the command line. Here's a step-by-step guide tailored for your setup:
+
+1. Set Up Maven
+Ensure Maven is installed and properly configured on your machine:
+
+Verify Maven installation:
+
+bash
+mvn -v
+If it’s not installed, download it from Apache Maven and add the bin folder to your system's PATH.
+
+2. Create a Maven Project
+Using the command line:
+
+Navigate to the directory where you want to create your project.
+
+Run the following command to create a Maven project:
+
+bash
+mvn archetype:generate -DgroupId=com.example.selenium -DartifactId=SeleniumChromeLaunch -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+groupId: Represents your project's package name (you can customize it).
+
+artifactId: The name of your project folder.
+
+Navigate into the created project folder:
+
+bash
+cd SeleniumChromeLaunch
+3. Add Dependencies to pom.xml
+Open the pom.xml file in Notepad++ and add the following dependencies:
+
+xml
+<dependencies>
+    <!-- Selenium Java Dependency -->
+    <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>4.x.x</version> <!-- Replace with the latest version -->
+    </dependency>
+
+    <!-- WebDriverManager Dependency -->
+    <dependency>
+        <groupId>io.github.bonigarcia</groupId>
+        <artifactId>webdrivermanager</artifactId>
+        <version>5.x.x</version> <!-- Replace with the latest version -->
+    </dependency>
+</dependencies>
+Save the file.
+
+4. Write Your Selenium Code
+In your Maven project folder, navigate to:
+
+src/main/java/com/example/selenium
+Create a new file named LaunchChromeDynamic.java in Notepad++.
+
+Paste the following code:
+
+java
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class LaunchChromeDynamic {
+    public static void main(String[] args) {
+        // Automatically resolve the correct ChromeDriver version
+        WebDriverManager.chromedriver().setup();
+
+        // Launch Chrome browser
+        WebDriver driver = new ChromeDriver();
+
+        try {
+            // Open a website
+            driver.get("https://www.google.com");
+
+            // Print the title of the current webpage
+            System.out.println("Page title is: " + driver.getTitle());
+
+            // Close the browser after 5 seconds (optional)
+            Thread.sleep(5000);
+            driver.quit();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+Save the file.
+
+5. Compile and Run the Program
+Compile the Maven project:
+
+bash
+mvn compile
+Run the program:
+
+bash
+mvn exec:java -Dexec.mainClass="com.example.selenium.LaunchChromeDynamic"
+6. Verify the Output
+This will launch Chrome, open "https://www.google.com," display the page title, and close the browser after 5 seconds.

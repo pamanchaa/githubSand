@@ -1,0 +1,390 @@
+===========================================================================================
+🛠️ Goal:
+✅ Install Eclipse
+✅ Install Python
+✅ Create GitHub account and Git setup
+✅ Pull sample code from GitHub into Eclipse
+✅ Setup Jenkins to trigger job automatically on code changes
+===========================================================================================
+✅ Install Eclipse
+
+machine=My CitrixWorkspace
+path=C:\Users\Prashanth.Amancha\eclipse\jee-2024-03\eclipse\eclipse.exe
+===========================================================================================
+✅ Install Python
+
+machine=My CitrixWorkspace
+path=C:\Python312\python.exe
+
+C:\Users\Prashanth.Amancha>python --version
+Python 3.12.3
+
+C:\Users\Prashanth.Amancha>where python
+C:\Python312\python.exe
+===========================================================================================
+✅ Create GitHub account and Git setup
+
+------------------------
+machine=My CitrixWorkspace
+
+C:\Users\Prashanth.Amancha>where git
+C:\Program Files\Git\cmd\git.exe
+
+C:\Users\Prashanth.Amancha>git version
+git version 2.47.0.windows.2
+------------------------
+github login details:
+link = https://github.com/pamanchaa/githubSand.git  (this did not work in git push -> https://github.com/pamanchaa/demoPipeline.git_)
+username=pamanchaa
+password=Selenium*12
+
+password to connect from eclipse (auth error):
+zfkkhxlaebjfmvop
+------------------------
+
+===========================================================================================
+✅ Pull sample code from GitHub to local and Import the same into Eclipse
+
+------------------------------
+machine=My CitrixWorkspace
+git local path = C:\MyProjects
+command to clone = git clone https://github.com/pamanchaa/githubSand.git 
+
+--> In C:\MyProjects, you will see 'githubSand' foldernow.
+-------------------------------
+Open Eclipse → File → Import → Git → Projects from Git → Projects from Git → Existing local repository (🔵 not Clone URI again)  →  Add  → Browse and select: C:\MyProject\githubSand.git  → If manually cloned project has .project or .classpath then select 'Import existing Eclipse projects', if pom.xml then Maven, if nothing then General Project
+
+Important Tip:
+Always match:
+-> Your manual clone location = Eclipse imported location.
+Otherwise Eclipse and Git will get "out of sync."
+-------------------------------
+===========================================================================================
+✅ Setup Jenkins to trigger job automatically on code changes
+
+--------------------------------------
+I. LAUNCH JENKINS:
+
+machine=My CitrixWorkspace
+Jenkin war file to start Jenkins=C:\software\jenkind_2_507    (old one was at C:\software\jenkins)
+Comamnd to start Jenkins = java -jar jenkins.war
+With Port = java -jar jenkins.war --httpPort=8080
+With Port and Jenkins_Home = java -DJENKINS_HOME=C:\custom\jenkins_home -jar jenkins.war --httpPort=8080
+
+JENKINS BINARY DIRECTORY =C:\software\jenkind_2_507   (SIMPLY WHERE WE HAVE WAR FILE)
+JENKINS RUNTIME DIRECTORY; JENKINS_HOME=C:\Users\Prashanth.Amancha\.jenkins (WHERE WE HAVE JOB CONFIGS, LOGS, PLUGINS, GLOBAL SETTING THAT IS config.xml))
+
+-> cmd must show that jenkins is running
+
+-> Launch browser and provide localhost:8080 > must launch jenkins home page with credentials to provide (i forgot credentials so, disabled it with below settings and relaunched)
+
+Disable security temporarily:
+Go to Jenkins configuration folder:
+
+1. C:\Users\<your-username>\.jenkins
+2. Open config.xml file.
+3. Find the block:
+<useSecurity>true</useSecurity>
+Change it to:
+<useSecurity>false</useSecurity>
+4. Save the file and, Restart Jenkins.
+
+Now Jenkins will start without any login prompt.
+(You can re-create new users from Manage Jenkins → Configure Global Security.)
+
+1. After resetting, enable security again
+After creating new admin user, go back to config.xml and set:
+<useSecurity>true</useSecurity>
+and restart Jenkins again.
+--------------------------------------
+II. CONFIGURE PLUGINS IN JENKINS:
+
+Configure Git Plugin in Jenkins:
+Manage Jenkins → Manage Plugins → Available → Search for "Git Plugin" → Install.
+--------------------------------------
+III. CREATE NEW ITEM IN JENKINS:
+
+Create a Jenkins Job: (in browser launch jenkins, issue -> localhost:8080)
+
+1. New Item → Freestyle project → Give name (e.g., triggerWithChangeInGitCommit).
+
+2. Under Source Code Management, select Git and paste your GitHub repository URL that is https://github.com/pamanchaa/githubSand.git > Under Branch provide -> */master
+
+3. Setup Trigger: "Build when changes are pushed":
+	Go to Build Triggers section.
+	Check "Poll SCM".
+	In the schedule box, type:
+	* * * * *
+	(meaning, every minute Jenkins checks if any changes.)
+
+4. Build Steps: "Execute Windows batch command"
+	Paste -> C:\createFile.bat
+	Create a bat file 'createFile.bat' in 'C:\' with below code (the code creates a file with name test1.txt only if is not already present)
+
+	@echo off
+	:: Check if the file test1.txt exists in C:\
+	if not exist "C:\test1.txt" (
+		echo File not found. Creating test1.txt...
+		echo This is a sample file. > "C:\test1.txt"
+	) else (
+		echo File test1.txt already exists.
+	)
+--------------------------------------
+Perfom code changes and Push: (Ensure file test1.txt must not be present in C drive of Jenkins machine, as the commit will create a job in the machien and creates the file)
+
+1. In Eclipse, in githubSand/'src/test/java'/com.sand/Hello.java, updated readme file to "Hello Github52"
+2. Launced cmd at C:\MyProjects\githubSand
+3. Run below
+
+git status   (must display master with untracked files in red color that is readme in red color)
+git add .
+git status   (must display readme in green color)
+git diff --cached (must display +Hello Github52)
+git commit -m "firstcommit"
+git push origin master  (if we want to avoid giving 'origin master' text (that is just 'git push/pull') from next commit, use 'git push --set-upstream origin master')
+
+A popup appears asking for credential > launch browser and provide username=pamanchaa, password=Selenium*12 > Now browser asks to enter code > A code will be sent to prashanth.amancha@gmail.com, take it and give in the code box on browser
+
+Now your cmd must display like below,
+
+C:\MyProjects\githubSand>git commit -m "Hello 52"
+[master fa3b65a] Hello 52
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+C:\MyProjects\githubSand>git push origin master
+info: please complete authentication in your browser...
+Enumerating objects: 15, done.
+Counting objects: 100% (15/15), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (8/8), 504 bytes | 100.00 KiB/s, done.
+Total 8 (delta 2), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To https://github.com/pamanchaa/githubSand.git
+   7dee244..fa3b65a  master -> master
+--------------------------------------
+
+-> In Jenkins a job must be created for 'triggerWithChangeInGitCommit'
+-> In C drive a file test1.txt must be created
+--------------------------------------
+--------------------------------------
+--------------------------------------
+
+===========================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+By ChatGPT:
+
+🛠️ Goal:
+✅ Install Eclipse
+✅ Install Python
+✅ Create GitHub account and Git setup
+✅ Pull sample code from GitHub into Eclipse
+✅ Setup Jenkins to trigger job automatically on code changes
+
+📚 Step-by-Step Instructions:
+1️⃣ Install Eclipse IDE
+Eclipse is an editor where you will see, edit, and run your code.
+
+Go to: https://www.eclipse.org/downloads/
+
+Download "Eclipse IDE for Java Developers".
+
+Install it normally (Next → Next → Finish).
+
+Open Eclipse.
+It will ask for a workspace location → Just click OK.
+
+2️⃣ Install Python
+Go to: https://www.python.org/downloads/
+
+Download the latest Python 3.x version.
+
+Important: While installing, select checkbox "Add Python to PATH" (very important!)
+
+Install it normally.
+
+✅ After install, check Python version:
+
+bash
+Copy
+Edit
+python --version
+If it shows a version like Python 3.12.1, you're good.
+
+3️⃣ Install Git
+Go to: https://git-scm.com/downloads
+
+Download Git for your OS.
+
+Install it with default options.
+
+✅ After install, check Git version:
+
+bash
+Copy
+Edit
+git --version
+It should show something like git version 2.39.2.
+
+4️⃣ Create GitHub Account
+Go to: https://github.com/
+
+Click Sign up.
+
+Create a username, email, and password.
+
+Verify email.
+
+✅ Done! You now have a GitHub account.
+
+5️⃣ Pull a Sample Code from GitHub
+Open Git Bash or command line.
+
+Go to any folder where you want the project.
+
+Example:
+
+bash
+Copy
+Edit
+cd C:\MyProjects
+Clone (download) any sample repo, for example:
+
+bash
+Copy
+Edit
+git clone https://github.com/octocat/Hello-World.git
+✅ It will create a folder Hello-World with files inside.
+
+6️⃣ Import Project into Eclipse
+Open Eclipse → File → Import →
+Git → Projects from Git → Clone URI → Paste the GitHub URL → Next → Import project.
+
+It will appear in Eclipse!
+
+7️⃣ Install Jenkins (locally)
+Go to: https://www.jenkins.io/download/
+
+Download Jenkins LTS (Windows / Linux depending on you).
+
+Install with default options.
+
+Open Jenkins at:
+
+arduino
+Copy
+Edit
+http://localhost:8080
+✅ Setup admin password during first login (it will show the location of password).
+
+8️⃣ Configure Git Plugin in Jenkins
+In Jenkins, go to:
+Manage Jenkins → Manage Plugins → Available → Search for "Git Plugin" → Install.
+
+✅ Now Jenkins can understand Git projects.
+
+9️⃣ Create a Jenkins Job
+New Item → Freestyle project → Give name (e.g., HelloWorld_Build).
+
+Under Source Code Management, select Git and paste your GitHub repository URL.
+
+Add credentials if private repo.
+
+🔟 Setup Trigger: "Build when changes are pushed"
+Go to Build Triggers section.
+
+Check "Poll SCM".
+
+In the schedule box, type:
+
+markdown
+Copy
+Edit
+* * * * *
+(meaning, every minute Jenkins checks if any changes.)
+
+✅ If you commit or push something new to GitHub → Jenkins will pick it automatically and run the job!
+
+💬 In very short:
+Step	Task
+1	Install Eclipse
+2	Install Python
+3	Install Git
+4	Create GitHub account
+5	Clone project
+6	Import in Eclipse
+7	Install Jenkins
+8	Configure Git plugin
+9	Create Jenkins job
+10	Setup automatic build trigger
+🏆 Now you can:
+Code in Eclipse ✍️
+
+Push code to GitHub ⬆️
+
+Jenkins will automatically run jobs! 🚀
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+-----------------------------------------
+sample commands:
+got clone/pull https://github.com/tibco/iprocesstest.git
+git status
+git branch
+git branch -all
+git checkout master
+git checkout -b sekhar_test origin/sekhar_test
+echo prashanth > prash.txt     (created file with text prashanth)
+git status
+git add prash.txt
+git status
+git commit -m "adding file"
+git show prash.txt
+git status
+git log
+git fetch origin
+git log sekhar_test..origin/sekhar_test --oneline
+git pull origin sekhar_test
+git push -u origin sekhar_test
+
+-----------------------------------------
+
