@@ -28,7 +28,7 @@ public class LaunchChromeTest {
             // Verify the page title
             String expectedTitle = "Google";
             String actualTitle = driver.getTitle();
-            assertEquals(expectedTitle, actualTitle, "Page title should match!");
+            assertEquals(expectedTitle, actualTitle, "Page title should match!!");
 
             System.out.println("Test Passed: Page title is " + actualTitle);
 
