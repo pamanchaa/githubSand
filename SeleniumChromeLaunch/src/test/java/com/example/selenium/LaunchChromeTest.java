@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class LaunchChromeTest {
 
     @Test
-    public void testLaunchChrome() {
+    public void testLaunchChrome() throws InterruptedException {
         // Automatically resolve the correct ChromeDriver version
         WebDriverManager.chromedriver().setup();
 		System.out.println("WebDriver Manager setup Completed!!");
@@ -23,6 +23,7 @@ public class LaunchChromeTest {
             // Open a website
             driver.get("https://www.google.com");
             Thread.sleep(5000);		
+            
 
             // Verify the page title
             String expectedTitle = "Google";
