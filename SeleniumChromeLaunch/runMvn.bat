@@ -1,2 +1,8 @@
-C:\software\apache-maven-3.9.9-bin\apache-maven-3.9.9\bin\mvn clean install
+@echo off
+echo Current Directory:
+cd
+dir
+
+call mvn -f SeleniumChromeLaunch\pom.xml clean install
+
 :: C:\createFile.bat
