@@ -22,7 +22,7 @@ public class LaunchChromeTest {
         try {
             // Open a website
             driver.get("https://www.google.com");
-            Thread.sleep(50000)
+            Thread.sleep(5000)
 			
 
             // Verify the page title
