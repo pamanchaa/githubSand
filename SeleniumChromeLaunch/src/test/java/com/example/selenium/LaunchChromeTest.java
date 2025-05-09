@@ -13,9 +13,11 @@ public class LaunchChromeTest {
     public void testLaunchChrome() {
         // Automatically resolve the correct ChromeDriver version
         WebDriverManager.chromedriver().setup();
+		System.out.println("WebDriver Manager setup Completed!!");
 
         // Launch Chrome browser
         WebDriver driver = new ChromeDriver();
+		System.out.println("Chrome Instantiated!!");
 
         try {
             // Open a website
